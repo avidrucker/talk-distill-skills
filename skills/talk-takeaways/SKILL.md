@@ -1,7 +1,7 @@
 ---
 name: talk-takeaways
-description: Read a talk transcript (ideally plus the SRT for accurate timestamps) and produce a Yegor-Bugayenko-style key_takeaways.md — a flat list of timestamp-anchored emoji-prefixed bullets for jumping back into the video. Use when the user wants a navigation index, not a read-through summary.
-version: 0.1.0
+description: Read a talk transcript (ideally plus the SRT for accurate timestamps) and produce a key_takeaways.md — a flat list of timestamp-anchored emoji-prefixed bullets for jumping back into the video. Use when the user wants a navigation index, not a read-through summary.
+version: 0.1.1
 last_reviewed: 2026-05-26
 ---
 
@@ -12,6 +12,11 @@ write `key_takeaways.md`. This is the **re-navigation** entry point — the
 doc someone opens when they've watched the talk and want to find a
 specific moment, or when they want to skim the structure before deciding
 which sections to watch.
+
+(This format / file name was first used in
+[`yegor-pm-skills`](https://github.com/avidrucker/yegor-pm-skills) for a
+Yegor Bugayenko talk; the structure is what's inherited, not anything
+attributable to Yegor.)
 
 ## When to invoke
 
@@ -119,18 +124,20 @@ then, the SRT-grep approach is the precision route.
 
 ## Examples
 
-Two reference takeaways docs this skill produced (handwritten with the
-same structure before the skill existed — they ARE the style guide):
+Two reference takeaways docs that this skill should produce something
+comparable to — written by hand with the same structure before the
+skill existed:
 
 - [Fulcro statecharts (basics)](https://github.com/avidrucker/fulcro-statecharts-talks/blob/main/fulcro_statecharts_talk/key_takeaways.md)
   — ~25 bullets covering 76 min of content.
 - [Fulcro statecharts (advanced marathon)](https://github.com/avidrucker/fulcro-statecharts-talks/blob/main/fulcro_statecharts_marathon/key_takeaways.md)
   — ~50 bullets covering 3 h 28 min.
 
-A different style lineage (different emoji and structure conventions):
+The sister repo where this file shape originated (different emoji
+choices, same structure):
 
-- [Yegor Bugayenko — XDSD talk](https://github.com/avidrucker/yegor-pm-skills/blob/talks/XDSD_YouTube_Talk/key_takeaways.md)
-  — the original inspiration for this shape.
+- [`XDSD_YouTube_Talk/key_takeaways.md`](https://github.com/avidrucker/yegor-pm-skills/blob/talks/XDSD_YouTube_Talk/key_takeaways.md)
+  — Yegor Bugayenko's XDSD talk.
 
 ## Caveats
 

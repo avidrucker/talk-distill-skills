@@ -2,10 +2,11 @@
 
 > Running notes for the **`talk-distill-skills`** project: the pipeline that
 > ingests a YouTube video, dedupes its auto-captions into a clean transcript,
-> labels speakers, and produces both Casey-style executive summary and
-> Yegor-style key-takeaways docs. The eventual goal is a Claude Code skill
-> family (parent `talk-distill` orchestrator + `talk-fetch` /
-> `talk-transcribe` / `talk-summarize` / `talk-takeaways` sub-skills).
+> labels speakers, and produces both an `executive_summary.md` (TL;DR +
+> Salient Points + Outline) and a `key_takeaways.md` (timestamped
+> emoji-bullet index). The eventual goal is a Claude Code skill family
+> (parent `talk-distill` orchestrator + `talk-fetch` / `talk-transcribe`
+> / `talk-summarize` / `talk-takeaways` sub-skills).
 >
 > Keep this doc honest about what worked, what didn't, and what surprised
 > us — that's what makes the future skill correct rather than aspirational.
@@ -31,14 +32,22 @@ Both use a **`main` + `talks` branch split**: curated summary on `main`, bulky
 transcript are recoverable from YouTube via `yt-dlp` anyway, so a default
 clone stays lean while the cite-and-quote material is one branch-switch away.
 
-Two distinct summary shapes were already established:
+Two distinct summary shapes were already established in those repos:
 
-- **Casey-style "talk_summary.md"**: TL;DR + Salient Points + Outline.
-  First-read friendly, prose, structured.
-- **Yegor-style "key_takeaways.md"**: Timestamps + emoji bullets. Re-navigation
-  friendly, scannable, links into the video's timeline.
+- **`talk_summary.md`** (in `warmed-skills/bad_code_talk/`): TL;DR + Salient
+  Points + Outline. First-read friendly, prose, structured.
+- **`key_takeaways.md`** (in `yegor-pm-skills/XDSD_YouTube_Talk/`): timestamps
+  + emoji bullets. Re-navigation friendly, scannable, links into the
+  video's timeline.
 
-The user picked **both** for this video, so we'll produce one of each.
+(Those filenames are inherited from the source repos; we use them as the
+canonical shapes for this family's two summary deliverables. The shapes
+are NOT attributable to Casey Muratori or Yegor Bugayenko personally —
+those were just the speakers of the talks each repo was summarising.)
+
+The user picked **both** for this video, so we'll produce one of each
+(under the warmed-skills file name `executive_summary.md` for the first
+shape — we standardized on that name going forward).
 
 ## Decisions for *this* video (Tony Kay, statecharts)
 
@@ -48,10 +57,10 @@ The user picked **both** for this video, so we'll produce one of each.
 | Subdir | `fulcro_statecharts_talk/` | warmed-skills `bad_code_talk` style — descriptive, lowercase, scoped (Fulcro, not generic statecharts) |
 | SRT filename | `captions.SRT` | Matches warmed-skills |
 | Caption track | `en-orig` (English Original auto-captions) | The only kind available — this video has no human-authored subs |
-| Transcript style | Light edit, near-literal, with speaker labels | Yegor-style. The preview the user picked showed `Tony Kay: …` / `Host: …` |
+| Transcript style | Light edit, near-literal, with speaker labels | The preview the user picked showed `Tony Kay: …` / `Host: …` — same shape as `yegor-pm-skills/XDSD_YouTube_Talk/XDSD_talk_yegor_2016.txt` |
 | Meta-opening (~20s of "Start recording / Share screen / Bigger") | Replace with a single `[Preamble: tech check]` marker | Acknowledges structural opening without preserving the noise |
 | Speaker names | `Tony Kay` + generic `Host` | Other speaker's name not knowable from captions alone |
-| Summary deliverables | Both Casey-style `executive_summary.md` AND Yegor-style `key_takeaways.md` | Reader gets first-read AND re-navigation entry points |
+| Summary deliverables | Both `executive_summary.md` (TL;DR + Salient + Outline shape) AND `key_takeaways.md` (timestamped emoji-bullet shape) | Reader gets first-read AND re-navigation entry points |
 
 ## Steps taken (with gotchas)
 
@@ -170,11 +179,12 @@ from Host to Tony Kay.
 - **Reusable convention for the talk subdir name**. Today the user chose
   `fulcro_statecharts_talk/` interactively. The skill could either always
   ask, or default to a derived name from the video title + uploader.
-- **Both summary shapes auto-generated**. Casey-style summary is a free-form
-  Claude task. Yegor-style key_takeaways requires choosing N timestamps,
-  which means the LLM needs the timestamped transcript (not just the
-  flattened text) — implying we should emit `transcript_timestamped.txt`
-  as a third artifact, or include timestamps inline in `transcript.txt`.
+- **Both summary shapes auto-generated**. The `executive_summary.md`
+  shape is a free-form Claude task. The `key_takeaways.md` shape requires
+  choosing N timestamps, which means the LLM needs the timestamped
+  transcript (not just the flattened text) — implying we should emit
+  `transcript_timestamped.txt` as a third artifact, or include timestamps
+  inline in `transcript.txt`.
 - **Repo-init / branch split** is still TODO for this video.  Currently
   files are in a flat working directory; we have not done `git init` or
   set up the `main`/`talks` branch split. Defer this until we know how
@@ -246,21 +256,24 @@ same screen-share/Zoom format; auto-captions only (`en` + `en-orig` again).
   transcript "done". The 27s preamble cut is a heuristic that happens to
   fit Tony's habit; other speakers will need different values.
 
-## Skill family — decisions locked
+## Skill family — drafted at v0.1.1
 
-Working names (committed 2026-05-25):
+Names locked 2026-05-25; v0.1.0 drafts written 2026-05-26; v0.1.1
+clarification (dropping misleading "Casey-/Yegor-style" qualifiers from
+descriptions) same day.
 
-- Parent meta-skill: **`talk-distill`** (orchestrator, similar to `yegor-pm`).
+- Parent meta-skill: **`talk-distill`** (orchestrator; structurally the
+  same shape as `yegor-pm` — parent + sub-skills routing).
 - Sub-skills:
   - `talk-fetch` — yt-dlp wrapper, picks the right sub track, handles preflight checks.
   - `talk-transcribe` — SRT → speaker-labelled transcript with the dedup + speaker-toggle heuristics piloted here.
-  - `talk-summarize` — transcript → Casey-style `executive_summary.md`.
-  - `talk-takeaways` — transcript (probably with timestamps preserved) → Yegor-style `key_takeaways.md`.
+  - `talk-summarize` — transcript → `executive_summary.md` (TL;DR + Salient Points + Outline structure).
+  - `talk-takeaways` — transcript (with timestamps from SRT cross-ref) → `key_takeaways.md` (timestamped emoji-bullet structure).
 
-**Not authored yet.** The skills will be created after the pipeline has
-been run on at least one more video — ideally one with different shape
-(manual subs, or a non-English track, or single-speaker / no `>>`s) — so the
-abstractions are validated rather than overfit to this one Fulcro talk.
+Skills are intentionally at v0.1.1, not v1.0. The defaults work on the
+two Tony Kay statechart talks; they need stress-testing on at least one
+video with a different shape (manual subs, non-English audio, or
+single-speaker / no `>>`s) before declaring them stable.
 
 ## Repo layout — split into two
 

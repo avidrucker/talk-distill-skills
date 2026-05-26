@@ -1,16 +1,21 @@
 ---
 name: talk-summarize
-description: Read a talk transcript and produce a Casey-Muratori-style executive_summary.md (TL;DR + Salient Points + Outline). Use when the user wants a first-read overview of a talk — prose, structured, and skimmable. No script involved; pure prompt-engineering for Claude.
-version: 0.1.0
+description: Read a talk transcript and produce an executive_summary.md (TL;DR + Salient Points + Outline). Use when the user wants a first-read overview of a talk — prose, structured, and skimmable. No script involved; pure prompt-engineering for Claude.
+version: 0.1.1
 last_reviewed: 2026-05-26
 ---
 
 # Talk Summarize — Sub Skill
 
-Read `transcript.txt` for a talk and write `executive_summary.md` in the
-Casey-Muratori style (TL;DR + Salient Points + Outline). This is the
-first-read entry point — the doc someone opens when they want to know
-what the talk is about *before* deciding to watch it.
+Read `transcript.txt` for a talk and write `executive_summary.md` using
+the **TL;DR + Salient Points + Outline** structure. This is the first-read
+entry point — the doc someone opens when they want to know what the talk
+is about *before* deciding to watch it.
+
+(This format / file name was first used in
+[`warmed-skills`](https://github.com/avidrucker/warmed-skills) for a
+Casey Muratori talk; the structure is what's inherited, not anything
+attributable to Casey.)
 
 ## When to invoke
 
@@ -114,16 +119,19 @@ once-over study material.
 
 ## Examples
 
-Two reference summaries this skill produced (handwritten with the same
-structure before the skill existed — they ARE the style guide):
+Two reference summaries that this skill should produce something
+comparable to — written by hand with the same structure before the skill
+existed:
 
 - [Fulcro statecharts (basics)](https://github.com/avidrucker/fulcro-statecharts-talks/blob/main/fulcro_statecharts_talk/executive_summary.md)
 - [Fulcro statecharts (advanced marathon)](https://github.com/avidrucker/fulcro-statecharts-talks/blob/main/fulcro_statecharts_marathon/executive_summary.md)
 
-Other historical references (different style lineages):
+Another example with the same structure, from the sister repo where
+this file shape originated (filename there is `talk_summary.md`; the
+content is the same TL;DR + Salient Points + Outline):
 
-- [Casey Muratori — "Where Does Bad Code Come From?"](https://github.com/avidrucker/warmed-skills/blob/main/bad_code_talk/talk_summary.md)
-  (called `talk_summary.md` in that repo; same shape).
+- [`bad_code_talk/talk_summary.md`](https://github.com/avidrucker/warmed-skills/blob/main/bad_code_talk/talk_summary.md)
+  — Casey Muratori's "Where Does Bad Code Come From?"
 
 ## Output
 

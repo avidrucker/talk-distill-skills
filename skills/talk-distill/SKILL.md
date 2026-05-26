@@ -1,15 +1,16 @@
 ---
 name: talk-distill
 description: Meta-orchestrator for distilling a YouTube talk into study material. Use when the user gives a YouTube URL and wants any of — SRT captions, a clean speaker-labelled transcript, an executive summary, or a timestamp-indexed key-takeaways doc. Routes to talk-fetch / talk-transcribe / talk-summarize / talk-takeaways sub-skills based on what's needed.
-version: 0.1.0
+version: 0.1.1
 last_reviewed: 2026-05-26
 ---
 
 # Talk Distill — Meta Skill
 
 Coordinated set of skills for turning a YouTube talk into study artifacts:
-raw SRT → light-edit speaker-labelled transcript → Casey-Muratori-style
-executive summary + Yegor-Bugayenko-style timestamped key-takeaways index.
+raw SRT → light-edit speaker-labelled transcript → `executive_summary.md`
+(TL;DR + Salient Points + Outline) + `key_takeaways.md` (timestamped
+emoji-bullet index).
 
 ## The 4 sub-skills
 
@@ -17,8 +18,8 @@ executive summary + Yegor-Bugayenko-style timestamped key-takeaways index.
 |---|---|
 | `talk-fetch` | Probe + download the best subtitle track for a YouTube URL. Auto-skips human-authored vs. auto-captioned vs. translated decisions. Outputs `captions.SRT`. |
 | `talk-transcribe` | Dedupe YouTube's rolling auto-captions, toggle speakers on `>>`, emit a paragraph-flowed `transcript.txt`. Wraps the project's `scripts/srt_to_transcript.py`. |
-| `talk-summarize` | Read the transcript, produce Casey-style `executive_summary.md` (TL;DR + Salient Points + Outline). First-read entry point. |
-| `talk-takeaways` | Read the transcript + SRT, produce Yegor-style `key_takeaways.md` (timestamped emoji bullets). Re-navigation entry point. |
+| `talk-summarize` | Read the transcript, produce `executive_summary.md` (TL;DR + Salient Points + Outline). First-read entry point. |
+| `talk-takeaways` | Read the transcript + SRT, produce `key_takeaways.md` (timestamped emoji-bullet index). Re-navigation entry point. |
 
 ## Typical sequence
 
@@ -61,7 +62,7 @@ not `video_1/`).
 
 - One subdir per talk under the project root; filenames in that subdir are
   fixed: `captions.SRT`, `transcript.txt`, `executive_summary.md`, `key_takeaways.md`.
-- Casey-style + Yegor-style summaries coexist — they serve different
+- The executive summary and key takeaways coexist — they serve different
   purposes (first-read vs. re-navigation). Default is to produce both
   unless the user asks for only one.
 - Speaker labels in the transcript are ~90–95% accurate. The pipeline is
@@ -82,9 +83,16 @@ The design rationale, heuristic details, and cross-video validation results
 live in [`workflow_notes.md`](../../workflow_notes.md) at the repo root.
 That doc is the "research/" equivalent for this skill family.
 
-Sister projects that established the layout conventions this family follows:
+Sister repos this family borrowed conventions from (not "styles" — just
+the source of the outline shape and file-naming conventions we adopted):
 
-- [`warmed-skills`](https://github.com/avidrucker/warmed-skills) — Casey
-  Muratori talks → skills (philosophy distillation flavor).
+- [`warmed-skills`](https://github.com/avidrucker/warmed-skills) — first
+  repo I built with the `<talk>/captions.SRT` + `transcript.txt` +
+  `talk_summary.md` shape that `talk-distill` produces. The
+  `executive_summary.md` format (TL;DR + Salient Points + Outline) came
+  from there.
 - [`yegor-pm-skills`](https://github.com/avidrucker/yegor-pm-skills) —
-  Yegor Bugayenko's writings → skills (XDSD methodology flavor).
+  first repo I built with the meta-skill + per-sub-skill `SKILL.md` +
+  `VERSION` + `CHANGELOG.md` layout that this family follows. The
+  `key_takeaways.md` format (timestamped emoji-bullet index) came from
+  there.
